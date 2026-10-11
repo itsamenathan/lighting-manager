@@ -1,0 +1,21 @@
+services:
+  lightning:
+    build: .
+    image: lighting-manager
+    restart: unless-stopped
+    init: true
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      # These override .env so the app always matches the container layout.
+      HOST: 0.0.0.0
+      PORT: 4000
+      DATABASE_PATH: /data/lightning.db
+    ports:
+      - "${PORT:-4000}:4000"
+    volumes:
+      - lightning-data:/data
+
+volumes:
+  lightning-data:

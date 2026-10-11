@@ -1,0 +1,1 @@
+ALTER TABLE `screen_state` ADD `public_url` text;
