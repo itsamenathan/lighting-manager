@@ -63,11 +63,17 @@ api.post(
   (req, res) => {
     const data = parse(signupSchema, req.body, res);
     if (!data) return;
+    const approved = getScreen().autoApprove;
     db.insert(talks)
-      .values({ ...data, createdAt: Date.now() })
+      .values({
+        ...data,
+        createdAt: Date.now(),
+        ...(approved ? { status: "approved" as const, position: nextPosition() } : {}),
+      })
       .run();
     broadcastTalksChanged();
-    res.status(201).json({ ok: true });
+    if (approved) broadcastState();
+    res.status(201).json({ ok: true, approved });
   },
 );
 
@@ -210,6 +216,8 @@ const settingsSchema = z.object({
     .transform((s) => s || null)
     .nullable()
     .optional(),
+  zeroAlert: z.boolean().optional(),
+  autoApprove: z.boolean().optional(),
 });
 
 admin.post("/settings", (req, res) => {

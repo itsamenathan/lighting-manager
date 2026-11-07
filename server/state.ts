@@ -69,6 +69,8 @@ export function buildPublicState(): PublicState {
     eventName: s.eventName,
     banner: s.banner,
     signupUrl: s.publicUrl || process.env.PUBLIC_URL || null,
+    zeroAlert: s.zeroAlert,
+    autoApprove: s.autoApprove,
     timer: getTimer(),
     current: current ? toPublic(current) : null,
     upNext: upNext.map(toPublic),

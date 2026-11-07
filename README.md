@@ -55,6 +55,7 @@ If you run behind nginx or another proxy, disable response buffering for `/api/e
 3. Open `/screen` on the projector. Double-click or press **F** to go fullscreen.
 4. In `/admin`, **Next talk** loads the first talk in the queue and **Start** (or **Space**) starts the clock. When the talk ends, **Next talk** (or **N**) marks it done and loads the following one.
 5. Use **+30s / −30s / +1m** to change the current slot, **Reset** (or **R**) to restart it, and **Clear** to return the screen to the idle lineup. The scrolling banner is for announcements.
+6. Under **Screen settings**, **Auto-approve sign-ups** sends new talks straight to the end of the running order without review, and **Time's-up alert** turns the full-screen HACK THE PLANET burst at zero on or off.
 
 Screen phases: green while running → amber at 60 s ("intrusion detected") → pink and shaking at 10 s → **HACK THE PLANET!** at zero → red overtime counting up, with rotating quotes.
 
