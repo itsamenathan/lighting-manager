@@ -377,6 +377,14 @@ function SettingsPanel({ state, save }: { state: PublicState; save: (b: object) 
         checked={state.autoApprove}
         onChange={(autoApprove) => save({ autoApprove })}
       />
+      <label className="form">
+        <span className="label">Default talk length (new sign-ups)</span>
+        <DurationSelect
+          value={state.defaultDurationSec}
+          onChange={(defaultDurationSec) => save({ defaultDurationSec })}
+          label="Default talk length"
+        />
+      </label>
       <form
         className="form"
         onSubmit={(e) => {
@@ -472,6 +480,20 @@ function Toggle({
 
 const DURATIONS = [180, 300, 420, 600, 900];
 
+/** Preset lengths, plus the current value if it isn't one of them. */
+function DurationSelect({ value, onChange, label }: { value: number; onChange: (sec: number) => void; label: string }) {
+  const options = DURATIONS.includes(value) ? DURATIONS : [...DURATIONS, value].sort((a, b) => a - b);
+  return (
+    <select value={value} onChange={(e) => onChange(Number(e.target.value))} aria-label={label}>
+      {options.map((d) => (
+        <option key={d} value={d}>
+          {formatDuration(d)}
+        </option>
+      ))}
+    </select>
+  );
+}
+
 function TalkCard({
   talk,
   index,
@@ -489,9 +511,6 @@ function TalkCard({
 }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(talk);
-  const durations = DURATIONS.includes(talk.durationSec)
-    ? DURATIONS
-    : [...DURATIONS, talk.durationSec].sort((a, b) => a - b);
 
   return (
     <article className={`talk-card ${live ? "is-live" : ""}`}>
@@ -559,17 +578,11 @@ function TalkCard({
       </div>
       {!editing && (
         <div className="tc-actions">
-          <select
+          <DurationSelect
             value={talk.durationSec}
-            onChange={(e) => onSave({ durationSec: Number(e.target.value) })}
-            aria-label="Talk length"
-          >
-            {durations.map((d) => (
-              <option key={d} value={d}>
-                {formatDuration(d)}
-              </option>
-            ))}
-          </select>
+            onChange={(durationSec) => onSave({ durationSec })}
+            label="Talk length"
+          />
           {children}
           <button
             className="btn"

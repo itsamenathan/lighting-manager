@@ -35,10 +35,14 @@ export interface PublicState {
   zeroAlert: boolean;
   /** New sign-ups go straight into the running order. */
   autoApprove: boolean;
+  /** Length given to new sign-ups. */
+  defaultDurationSec: number;
   timer: TimerState;
   current: PublicTalk | null;
   upNext: PublicTalk[];
 }
 
 export const DEFAULT_TALK_SEC = 300;
+/** Bounds for a talk's length, in seconds. */
+export const DURATION_LIMITS = { min: 10, max: 60 * 60 } as const;
 export const LIMITS = { speakerName: 80, title: 120, description: 1000 } as const;

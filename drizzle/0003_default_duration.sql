@@ -1,0 +1,1 @@
+ALTER TABLE `screen_state` ADD `default_duration_sec` integer DEFAULT 300 NOT NULL;

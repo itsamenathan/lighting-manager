@@ -22,6 +22,13 @@
       "when": 1794023198421,
       "tag": "0002_settings_toggles",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1794030321726,
+      "tag": "0003_default_duration",
+      "breakpoints": true
     }
   ]
 }
