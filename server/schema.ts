@@ -32,4 +32,6 @@ export const screenState = sqliteTable("screen_state", {
   zeroAlert: integer("zero_alert", { mode: "boolean" }).notNull().default(true),
   /** Approve new sign-ups straight into the running order, skipping review. */
   autoApprove: integer("auto_approve", { mode: "boolean" }).notNull().default(false),
+  /** Length given to new sign-ups. */
+  defaultDurationSec: integer("default_duration_sec").notNull().default(DEFAULT_TALK_SEC),
 });

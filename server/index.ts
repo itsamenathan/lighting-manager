@@ -17,7 +17,7 @@ import {
   timer,
   updateScreen,
 } from "./state";
-import { DEFAULT_TALK_SEC, LIMITS } from "../shared/types";
+import { DURATION_LIMITS, LIMITS } from "../shared/types";
 
 const app = express();
 const PORT = Number(process.env.PORT ?? 4000);
@@ -63,10 +63,11 @@ api.post(
   (req, res) => {
     const data = parse(signupSchema, req.body, res);
     if (!data) return;
-    const approved = getScreen().autoApprove;
+    const { autoApprove: approved, defaultDurationSec } = getScreen();
     db.insert(talks)
       .values({
         ...data,
+        durationSec: defaultDurationSec,
         createdAt: Date.now(),
         ...(approved ? { status: "approved" as const, position: nextPosition() } : {}),
       })
@@ -106,18 +107,14 @@ admin.get("/talks", (_req, res) => {
 });
 
 const idParam = z.coerce.number().int().positive();
+const durationSec = z.number().int().min(DURATION_LIMITS.min).max(DURATION_LIMITS.max);
 
 const patchSchema = z.object({
   speakerName: clean(LIMITS.speakerName).pipe(z.string().min(1)).optional(),
   title: clean(LIMITS.title).optional(),
   description: clean(LIMITS.description).pipe(z.string().min(1)).optional(),
   status: z.enum(["pending", "approved", "rejected", "done"]).optional(),
-  durationSec: z
-    .number()
-    .int()
-    .min(10)
-    .max(60 * 60)
-    .optional(),
+  durationSec: durationSec.optional(),
 });
 
 admin.patch("/talks/:id", (req, res) => {
@@ -218,6 +215,7 @@ const settingsSchema = z.object({
     .optional(),
   zeroAlert: z.boolean().optional(),
   autoApprove: z.boolean().optional(),
+  defaultDurationSec: durationSec.optional(),
 });
 
 admin.post("/settings", (req, res) => {
@@ -240,5 +238,5 @@ if (fs.existsSync(distDir)) {
 }
 
 app.listen(PORT, HOST, () => {
-  console.log(`[lightning] listening on http://${HOST}:${PORT} (default talk ${DEFAULT_TALK_SEC}s)`);
+  console.log(`[lightning] listening on http://${HOST}:${PORT}`);
 });

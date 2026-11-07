@@ -71,6 +71,7 @@ export function buildPublicState(): PublicState {
     signupUrl: s.publicUrl || process.env.PUBLIC_URL || null,
     zeroAlert: s.zeroAlert,
     autoApprove: s.autoApprove,
+    defaultDurationSec: s.defaultDurationSec,
     timer: getTimer(),
     current: current ? toPublic(current) : null,
     upNext: upNext.map(toPublic),
