@@ -95,7 +95,7 @@ export function ScreenPage() {
         <IdleView state={state} signupUrl={signupUrl} signupLabel={signupLabel} />
       )}
 
-      {phase === "zero" && <HackThePlanet />}
+      {phase === "zero" && state.zeroAlert && <HackThePlanet />}
 
       <Link to="/admin" className="pi" title="π">
         π

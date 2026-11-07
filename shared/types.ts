@@ -31,6 +31,10 @@ export interface PublicState {
   eventName: string;
   banner: string | null;
   signupUrl: string | null;
+  /** Show the full-screen burst when the countdown hits zero. */
+  zeroAlert: boolean;
+  /** New sign-ups go straight into the running order. */
+  autoApprove: boolean;
   timer: TimerState;
   current: PublicTalk | null;
   upNext: PublicTalk[];

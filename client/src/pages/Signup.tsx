@@ -12,7 +12,7 @@ export function SignupPage() {
   const [form, setForm] = useState(EMPTY);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [sent, setSent] = useState(false);
+  const [sent, setSent] = useState<{ approved: boolean } | null>(null);
 
   const set = (k: keyof typeof EMPTY) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
@@ -22,8 +22,8 @@ export function SignupPage() {
     setBusy(true);
     setError(null);
     try {
-      await api("/talks", { body: form });
-      setSent(true);
+      const res = await api<{ approved?: boolean }>("/talks", { body: form });
+      setSent({ approved: !!res.approved });
       setForm(EMPTY);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Transmission failed");
@@ -54,8 +54,11 @@ export function SignupPage() {
           {sent ? (
             <div className="terminal-body sent">
               <p className="ok">&gt; TRANSMISSION RECEIVED.</p>
-              <p>Your talk is in the review queue. Watch the big screen to see when you're up.</p>
-              <button className="btn" onClick={() => setSent(false)}>
+              <p>
+                {sent.approved ? "Your talk is in the lineup." : "Your talk is in the review queue."} Watch the big
+                screen to see when you're up.
+              </p>
+              <button className="btn" onClick={() => setSent(null)}>
                 Submit another
               </button>
             </div>

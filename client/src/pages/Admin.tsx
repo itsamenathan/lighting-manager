@@ -166,7 +166,11 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             <h2>
               Pending review <span className="count">{pending.length}</span>
             </h2>
-            {pending.length === 0 && <p className="muted">No submissions waiting.</p>}
+            {pending.length === 0 && (
+              <p className="muted">
+                {state?.autoApprove ? "Auto-approve is on: new sign-ups skip review." : "No submissions waiting."}
+              </p>
+            )}
             {pending.map((t) => (
               <TalkCard key={t.id} talk={t} onSave={(b) => patch(t.id, b)}>
                 <button className="btn btn-ok" onClick={() => patch(t.id, { status: "approved" })}>
@@ -361,6 +365,18 @@ function SettingsPanel({ state, save }: { state: PublicState; save: (b: object) 
   return (
     <section className="panel settings-panel">
       <h2>Screen settings</h2>
+      <Toggle
+        label="Time's-up alert"
+        hint="Full-screen HACK THE PLANET burst when the countdown hits zero"
+        checked={state.zeroAlert}
+        onChange={(zeroAlert) => save({ zeroAlert })}
+      />
+      <Toggle
+        label="Auto-approve sign-ups"
+        hint="New talks go straight to the back of the running order, skipping review"
+        checked={state.autoApprove}
+        onChange={(autoApprove) => save({ autoApprove })}
+      />
       <form
         className="form"
         onSubmit={(e) => {
@@ -426,6 +442,31 @@ function SettingsPanel({ state, save }: { state: PublicState; save: (b: object) 
         </label>
       </form>
     </section>
+  );
+}
+
+function Toggle({
+  label,
+  hint,
+  checked,
+  onChange,
+}: {
+  label: string;
+  hint: string;
+  checked: boolean;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <label className="toggle">
+      <input type="checkbox" role="switch" checked={checked} onChange={(e) => onChange(e.target.checked)} />
+      <span className="toggle-track" aria-hidden />
+      <span className="toggle-text">
+        <span className="toggle-label">
+          {label} <span className={`toggle-state ${checked ? "is-on" : ""}`}>{checked ? "ON" : "OFF"}</span>
+        </span>
+        <span className="muted small">{hint}</span>
+      </span>
+    </label>
   );
 }
 

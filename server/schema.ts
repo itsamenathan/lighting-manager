@@ -28,4 +28,8 @@ export const screenState = sqliteTable("screen_state", {
   elapsedMs: integer("elapsed_ms").notNull().default(0),
   startedAt: integer("started_at"),
   currentTalkId: integer("current_talk_id"),
+  /** Show the full-screen "HACK THE PLANET" burst when the countdown hits zero. */
+  zeroAlert: integer("zero_alert", { mode: "boolean" }).notNull().default(true),
+  /** Approve new sign-ups straight into the running order, skipping review. */
+  autoApprove: integer("auto_approve", { mode: "boolean" }).notNull().default(false),
 });
