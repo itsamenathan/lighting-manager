@@ -57,13 +57,16 @@ export function buildPublicState(): PublicState {
   const current = s.currentTalkId
     ? db.select().from(talks).where(eq(talks.id, s.currentTalkId)).get()
     : undefined;
+  const waiting = and(eq(talks.status, "approved"), s.currentTalkId ? ne(talks.id, s.currentTalkId) : undefined);
   const upNext = db
     .select()
     .from(talks)
-    .where(and(eq(talks.status, "approved"), s.currentTalkId ? ne(talks.id, s.currentTalkId) : undefined))
+    .where(waiting)
     .orderBy(asc(talks.position), asc(talks.id))
     .limit(UP_NEXT_LIMIT)
     .all();
+  const queueCount =
+    db.select({ n: sql<number>`count(*)` }).from(talks).where(waiting).get()?.n ?? 0;
   return {
     serverNow: Date.now(),
     eventName: s.eventName,
@@ -75,6 +78,7 @@ export function buildPublicState(): PublicState {
     timer: getTimer(),
     current: current ? toPublic(current) : null,
     upNext: upNext.map(toPublic),
+    queueCount,
   };
 }
 

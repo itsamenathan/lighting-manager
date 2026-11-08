@@ -216,7 +216,7 @@ function LiveView({
           </div>
         </div>
         {next ? (
-          <NextUp talk={next} more={state.upNext.length - 1} view={view} phase={phase} />
+          <NextUp talk={next} more={state.queueCount - 1} view={view} phase={phase} />
         ) : (
           <div className="queue-empty">QUEUE EMPTY // YOUR TALK COULD BE NEXT</div>
         )}
@@ -279,6 +279,11 @@ function IdleView({ state, signupUrl, signupLabel }: { state: PublicState; signu
           <pre className="terminal-body">
             <span className="term-cmd">$ ls -la ./lineup</span>
             {"\n"}
+            {state.queueCount > 0 && (
+              <span className="term-dim">
+                total {state.queueCount} {state.queueCount === 1 ? "talk" : "talks"} queued{"\n"}
+              </span>
+            )}
             {state.upNext.length === 0 ? (
               <span className="term-dim">total 0 — no talks queued. Be the first.</span>
             ) : (
@@ -290,6 +295,9 @@ function IdleView({ state, signupUrl, signupLabel }: { state: PublicState; signu
                   {"\n"}
                 </span>
               ))
+            )}
+            {state.queueCount > state.upNext.length && (
+              <span className="term-dim">... +{state.queueCount - state.upNext.length} more</span>
             )}
           </pre>
         </section>

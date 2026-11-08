@@ -40,6 +40,8 @@ export interface PublicState {
   timer: TimerState;
   current: PublicTalk | null;
   upNext: PublicTalk[];
+  /** Total approved talks waiting, excluding the current one (upNext is capped). */
+  queueCount: number;
 }
 
 export const DEFAULT_TALK_SEC = 300;
